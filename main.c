@@ -1,4 +1,11 @@
 #include <stdio.h>
+#include "customer.h"
+
+//Function declaration
+void readPersonalData(char firstName[], char lastName[],char phoneNumber[], char address[]);
+void showBrands(int noOfBrands, char brands[][10]);
+int getChoiceIndex(int noOfChoices, int *state);
+void showCustomerData(char firstName[], char lastName[], char phoneNumber[], char address[]);
 
 int main() {
     printf("Welcome to our car shop.\n");
@@ -36,35 +43,14 @@ int main() {
         switch (state) {
             case 0: {
                 // Input personal data
-                printf("Please input your data\n");
-                printf("---First name:\n");
-                gets(firstName);
-                printf("---Last name:\n");
-                gets(lastName);
-                printf("---Phone number\n");
-                gets(phoneNumber);
-                printf("---Address\n");
-                gets(address);
+                readPersonalData(firstName, lastName, phoneNumber, address);
                 state++;
                 break;
             }
             case 1: {
                 // Choose the brand
-                printf("Please choose the car brand\n");
-                for(int i=0;i<noOfBrands;i++) {
-                    putchar('a'+i);
-                    printf(") %s\n",brands[i]);
-                }
-                printf("%c) Go back\n",'a'+noOfBrands);
-                choice = getchar();
-                // consume new line
-                getchar();
-                if(choice == 'a'+noOfBrands) {
-                    state--;
-                    break;
-                }
-                brandChoice = choice - 'a';
-                state++;
+                showBrands(noOfBrands,brands);
+                brandChoice = getChoiceIndex(noOfBrands, &state);
                 break;
             }
             case 2: {
@@ -124,10 +110,7 @@ int main() {
                 // Display contract
                 printf("Your contract is:\n");
                 printf("-------------\n");
-                printf("Customer data:\n");
-                printf("-name: %s %s\n", firstName, lastName);
-                printf("-phone number: %s\n", phoneNumber);
-                printf("-address: %s\n", address);
+                showCustomerData(firstName, lastName, phoneNumber, address);
                 printf("Car data:\n");
                 printf("-car model: %s (%.2f)\n", models[brandChoice][modelChoice], prices[brandChoice][modelChoice]);
                 double additionalItemsPrice = 0;
@@ -159,3 +142,30 @@ int main() {
 
     return 0;
 }
+
+
+
+void showBrands(int noOfBrands, char brands[][10]){
+    // Choose the brand
+    printf("Please choose the car brand\n");
+    for(int i=0;i<noOfBrands;i++) {
+        putchar('a'+i);
+        printf(") %s\n",brands[i]);
+    }
+    printf("%c) Go back\n",'a'+noOfBrands);
+}
+
+int getChoiceIndex(int noOfChoices, int *state) {
+    int choiceIndex;
+    char choice = getchar();
+    // consume new line
+    getchar();
+    if(choice == 'a'+noOfChoices) {
+        (*state)--;
+    } else {
+        choiceIndex = choice - 'a';
+        (*state)++; //*state-- <==> *(state--)
+    }
+    return choiceIndex;
+}
+
